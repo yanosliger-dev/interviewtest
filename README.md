@@ -17,3 +17,4 @@ ansible 2.9.6
 
 # Changelog
 16/10/2020 updated orig code to use pure ansible instead of docker-compose
+16/10/2020 added mysqlcluster code 
