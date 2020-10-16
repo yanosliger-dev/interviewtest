@@ -1,0 +1,19 @@
+
+- name: create project dir for docker-compose
+  file:
+    path: /data/interview_test/rabbitmq
+    state: directory
+
+- name: copy docker-compose file
+  copy:
+    src: docker-compose.yml
+    dest: /data/interview_test/rabbitmq/docker-compose.yml
+    owner: root
+    group: root
+
+- name: create RabbiMQ thingys
+  docker_compose:
+    project_src: /data/interview_test/rabbitmq
+    files:
+      - docker-compose.yml
+    state: present

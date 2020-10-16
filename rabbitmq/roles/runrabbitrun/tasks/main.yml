@@ -1,0 +1,28 @@
+- name: create first container
+  docker_container:
+    name: "runrabbit-1"
+    hostname: "runrabbit-1"
+    image: lucifer8591/rabbitmq-server:3.7.17
+    state: started
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    env:
+      RABBITMQ_DEFAULT_USER: "{{ RABBIT_ADMIN_NAME }}"
+      RABBITMQ_DEFAULT_PASS: "{{ RABBIT_ADMIN_PASS }}"
+
+- name: create second
+  docker_container:
+    name: "runrabbit-2"
+    hostname: "runrabbit-2"
+    image: lucifer8591/rabbitmq-server:3.7.17
+    state: started
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    links:
+      - runrabbit-1
+    env:
+      CLUSTERED: "true"
+      CLUSTER_WITH: "runrabbit-1"
+      RAM_NODE: "true"

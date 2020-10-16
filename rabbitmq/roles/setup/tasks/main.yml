@@ -1,0 +1,59 @@
+---
+
+- name: Install prerequisites for Docker repository
+  apt:
+    name: ['apt-transport-https', 'ca-certificates', 'curl', 'gnupg2', 'software-properties-common', 'python3', 'python3-venv', 'python-pip']
+    update_cache: yes
+
+- name: Add Docker GPG key
+  apt_key: url=https://download.docker.com/linux/ubuntu/gpg
+
+- name: Add Docker APT repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu xenial stable
+    state: present
+    update_cache: yes
+
+- name: add apt key for Ansible
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: 93C4A3FD7BB9C367
+
+- name: Add Ansible APT repository
+  apt_repository:
+    repo: deb http://ppa.launchpad.net/ansible/ansible/ubuntu xenial main
+    state: present
+    update_cache: yes
+
+- name: install additional packages
+  apt:
+    name: ['docker-ce', 'docker-ce-cli', 'containerd.io', 'ansible', 'python-pip', 'python3-pip']
+    update_cache: yes
+
+- name: Get latest docker-compose
+  get_url:
+    url: https://github.com/docker/compose/releases/download/1.27.4/docker-compose-Linux-x86_64
+    dest: /usr/local/bin/docker-compose
+    mode: 'u+x,g+x'
+
+- name: upgrade pip
+  pip:
+    name: pip
+    extra_args: --upgrade
+
+- name: Install Docker module for Python
+  pip:
+    name: docker
+
+- name: install docker-compose
+  pip:
+    name: docker-compose
+
+- name: start and enable docker at boot time
+  service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Get Ansible Galaxy community module
+  command: ansible-galaxy collection install community.general
