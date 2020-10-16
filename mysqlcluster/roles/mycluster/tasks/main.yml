@@ -1,0 +1,42 @@
+- name: create Master SQL node
+  docker_container:
+    name: "mymaster-1"
+    hostname: "mymaster-1"
+    image: bitnami/mysql:latest
+    state: started
+    ports:
+      - "3306:3306"
+    exposed_ports:       
+      - "3306"
+    expose:
+      - "3306"
+    env:
+      MYSQL_ROOT_PASSWORD: "{{ MY_ROOT_PASS }}"
+      MYSQL_DATABASE: "{{ MY_ROOT_DB }}"
+      MYSQL_REPLICATION_MODE: master
+      MYSQL_REPLICATION_USER: "{{ MY_REPLICATION_USER }}"
+      MYSQL_REPLICATION_PASSWORD: "{{ MY_REPLICATION_PASS }}"
+      MYSQL_USER: "{{ MY_SQL_USER }}"
+      MYSQL_PASSWORD: "{{ MY_SQL_PASS }}"
+    restart: yes
+
+- name: create Slave SQL node
+  docker_container:
+    name: "myslave-1"
+    hostname: "myslave-1"
+    image: bitnami/mysql:latest
+    state: started
+    ports:
+      - "3306"
+    links:
+      - mymaster-1  
+    env:
+      MYSQL_REPLICATION_MODE: slave
+      MYSQL_REPLICATION_USER: "{{ MY_REPLICATION_USER }}"
+      MYSQL_REPLICATION_PASSWORD: "{{ MY_REPLICATION_PASS }}"
+      MYSQL_MASTER_HOST: mymaster-1
+      MYSQL_MASTER_PORT_NUMBER: "3306"
+      MYSQL_MASTER_ROOT_PASSWORD: "{{ MY_ROOT_PASS }}"
+    restart: yes
+
+

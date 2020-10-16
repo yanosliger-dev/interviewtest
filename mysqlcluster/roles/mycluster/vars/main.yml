@@ -1,0 +1,6 @@
+MY_ROOT_PASS: whatcha
+MY_ROOT_DB: nimda
+MY_REPLICATION_USER: repli
+MY_REPLICATION_PASS: pass
+MY_SQL_USER: user1
+MY_SQL_PASS: name
