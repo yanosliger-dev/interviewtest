@@ -1,0 +1,139 @@
+- name: Create docker network
+  docker_network:
+    name: redis-cluster-network
+
+- name: Redis Node0
+  docker_container:
+    name: "rnode0"
+    hostname: "rnode0"
+    image: docker.io/bitnami/redis-cluster:6.0-debian-10
+    state: started
+    env:
+      REDIS_PASSWORD: "bitnami"
+      REDIS_NODES: 'rnode0 rnode1 rnode2 rnode3 rnode4 rnode5'
+    networks:
+      - name: redis-cluster-network
+        links:
+          - rnode1
+          - rnode2
+          - rnode3
+          - rnode4
+          - rnode5
+          - rcluster1
+
+- name: Redis Node1
+  docker_container:
+    name: "rnode1"
+    hostname: "rnode1"
+    image: docker.io/bitnami/redis-cluster:6.0-debian-10
+    state: started
+    env:
+      REDIS_PASSWORD: "bitnami"
+      REDIS_NODES: 'rnode0 rnode1 rnode2 rnode3 rnode4 rnode5'
+    networks:
+      - name: redis-cluster-network
+        links:
+          - rnode0
+          - rnode2
+          - rnode3
+          - rnode4
+          - rnode5
+          - rcluster
+
+- name: Redis Node2
+  docker_container:
+    name: "rnode2"
+    hostname: "rnode2"
+    image: docker.io/bitnami/redis-cluster:6.0-debian-10
+    state: started
+    env:
+      REDIS_PASSWORD: "bitnami"
+      REDIS_NODES: 'rnode0 rnode1 rnode2 rnode3 rnode4 rnode5'
+    networks:
+      - name: redis-cluster-network
+        links:
+          - rnode0
+          - rnode1
+          - rnode3
+          - rnode4
+          - rnode5
+          - rcluster1
+
+- name: Redis Node3
+  docker_container:
+    name: "rnode3"
+    hostname: "rnode3"
+    image: docker.io/bitnami/redis-cluster:6.0-debian-10
+    state: started
+    env:
+      REDIS_PASSWORD: "bitnami"
+      REDIS_NODES: 'rnode0 rnode1 rnode2 rnode3 rnode4 rnode5'
+    networks:
+      - name: redis-cluster-network
+        links:
+          - rnode0
+          - rnode1
+          - rnode2
+          - rnode4
+          - rnode5
+          - rcluster1
+
+- name: Redis Node4
+  docker_container:
+    name: "rnode4"
+    hostname: "rnode4"
+    image: docker.io/bitnami/redis-cluster:6.0-debian-10
+    state: started
+    env:
+      REDIS_PASSWORD: "bitnami"
+      REDIS_NODES: 'rnode0 rnode1 rnode2 rnode3 rnode4 rnode5'
+    networks:
+      - name: redis-cluster-network
+        links:
+          - rnode0
+          - rnode1
+          - rnode2
+          - rnode3
+          - rnode5
+          - rcluster1
+
+- name: Redis Node5
+  docker_container:
+    name: "rnode5"
+    hostname: "rnode5"
+    image: docker.io/bitnami/redis-cluster:6.0-debian-10
+    state: started
+    env:
+      REDIS_PASSWORD: "bitnami"
+      REDIS_NODES: 'rnode0 rnode1 rnode2 rnode3 rnode4 rnode5'
+    networks:
+      - name: redis-cluster-network
+        links:
+          - rnode0
+          - rnode1
+          - rnode2
+          - rnode3
+          - rnode4
+          - rcluster1
+
+- name: redis Cluster master init
+  docker_container:
+    name: "rcluster1"
+    hostname: "rcluster1"
+    image: docker.io/bitnami/redis-cluster:6.0-debian-10
+    state: started
+    env:
+      REDISCLI_AUTH: "bitnami"
+      REDIS_CLUSTER_REPLICAS: "1"
+      REDIS_NODES: 'rnode0 rnode1 rnode2 rnode3 rnode4 rnode5'
+      REDIS_CLUSTER_CREATOR: "yes"
+    networks:
+      - name: redis-cluster-network
+        links:
+          - rnode0
+          - rnode1
+          - rnode2
+          - rnode3
+          - rnode4
+          - rnode5
+          - rcluster1
